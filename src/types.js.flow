@@ -1,0 +1,41 @@
+// @flow strict
+
+export type Alias = {
+	from: string,
+	to: string,
+}
+
+export type Sizes = {
+	identity: number,
+	deflate: ?number,
+	gzip: ?number,
+	brotli: ?number,
+}
+
+export type Headers = {
+	[string]: string,
+	...
+}
+
+export type File = {
+	path: string,
+	mime: string,
+	sizes: Sizes,
+	statusCode: number,
+	headers: Headers,
+}
+
+export type Folders = {
+	identity: string,
+	deflate: string,
+	gzip: string,
+	brotli: string,
+}
+
+export type ServerSetup = {
+	aliases: $ReadOnlyArray<Alias>,
+	folders: Folders,
+	files: $ReadOnlyArray<File>,
+	catchAllFile: ?File,
+	globalHeaders: Headers,
+}
