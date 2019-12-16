@@ -31,7 +31,7 @@ async function prepareOutputFiles(
 	}))
 
 	return Promise.all(files.map(async (path) => ({
-		path,
+		path: "/" + path,
 		sizes: await prepareFile(inputFolder, folders, path)
 	})))
 }

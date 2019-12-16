@@ -11,14 +11,20 @@ const createOutputFolders = require("./src/createOutputFolders")
 const prepareOutputFiles = require("./src/prepareOutputFiles")
 
 /*::
-import type { Alias, File, ServerSetup, Folders } from "./src/types"
+import type { ServerSetup, Folders } from "./src/types"
 */
 
 const [ , , requestPath ] = process.argv
 const absRequestPath = path.resolve(requestPath)
 
 prepareFiles(absRequestPath)
-	.then(() => { console.log("all done") }, (e) => console.error(e.stack) )
+	.then(
+		() => { console.log("all done") },
+		(e) => {
+			console.error(e.stack)
+			process.exit(1)
+		},
+	)
 
 async function prepareFiles(requestPath/*: string*/) /*: Promise<ServerSetup> */ {
 	const rawRequest = await fs.promises.readFile(requestPath, "utf-8")
@@ -42,7 +48,7 @@ async function prepareFiles(requestPath/*: string*/) /*: Promise<ServerSetup> */
 		catchAllFile: null,
 		globalHeaders: request.globalHeaders,
 		files: sizes.map(({ path, sizes }) => {
-			const overrides = request.files.find(x => x.path === path) || {}
+			const overrides = request.files.find(x => x.path === path) || { headers: {} }
 			const mimeType = overrides.mime || "" || mime.getType(path)
 			if(mimeType == null) {
 				throw new Error(`Could not determine mime-type for ${path}`)
