@@ -26,7 +26,7 @@ async function cmd([ rawRequestPath ]/*: $ReadOnlyArray<string>*/) {
 	const outputDir = path.resolve(baseDir, request.output)
 
 	await fs.promises.rmdir(outputDir,
-		// $FlowFixMe flow 0.113 does not support the recursive statement
+		// $FlowFixMe flow 0.114.0 does not support the recursive statement
 		{ recursive: true })
 
 	const allFiles = await glob("**/*", { cwd: targetDir, nodir: true })
