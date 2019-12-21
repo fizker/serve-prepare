@@ -124,7 +124,7 @@ describe("unit/assertSetupRequest.js", () => {
 					input: {
 						files: [
 							{
-								path: "abc",
+								path: "/abc",
 								mime: 1,
 							},
 						],
@@ -135,7 +135,7 @@ describe("unit/assertSetupRequest.js", () => {
 					input: {
 						files: [
 							{
-								path: "abc",
+								path: "/abc",
 								mime: false,
 							},
 						],
@@ -146,7 +146,7 @@ describe("unit/assertSetupRequest.js", () => {
 					input: {
 						files: [
 							{
-								path: "abc",
+								path: "/abc",
 								mime: {},
 							},
 						],
@@ -157,7 +157,7 @@ describe("unit/assertSetupRequest.js", () => {
 					input: {
 						files: [
 							{
-								path: "abc",
+								path: "/abc",
 								mime: [],
 							},
 						],
@@ -168,7 +168,7 @@ describe("unit/assertSetupRequest.js", () => {
 					input: {
 						files: [
 							{
-								path: "abc",
+								path: "/abc",
 								mime: "",
 							},
 						],
@@ -179,7 +179,7 @@ describe("unit/assertSetupRequest.js", () => {
 					input: {
 						files: [
 							{
-								path: "abc",
+								path: "/abc",
 								statusCode: "1",
 							},
 						],
@@ -190,7 +190,7 @@ describe("unit/assertSetupRequest.js", () => {
 					input: {
 						files: [
 							{
-								path: "abc",
+								path: "/abc",
 								statusCode: 0,
 							},
 						],
@@ -201,7 +201,7 @@ describe("unit/assertSetupRequest.js", () => {
 					input: {
 						files: [
 							{
-								path: "abc",
+								path: "/abc",
 								statusCode: [],
 							},
 						],
@@ -212,7 +212,7 @@ describe("unit/assertSetupRequest.js", () => {
 					input: {
 						files: [
 							{
-								path: "abc",
+								path: "/abc",
 								statusCode: {},
 							},
 						],
@@ -223,7 +223,7 @@ describe("unit/assertSetupRequest.js", () => {
 					input: {
 						files: [
 							{
-								path: "abc",
+								path: "/abc",
 								statusCode: false,
 							},
 						],
@@ -234,7 +234,7 @@ describe("unit/assertSetupRequest.js", () => {
 					input: {
 						files: [
 							{
-								path: "abc",
+								path: "/abc",
 								headers: 0,
 							},
 						],
@@ -245,7 +245,7 @@ describe("unit/assertSetupRequest.js", () => {
 					input: {
 						files: [
 							{
-								path: "abc",
+								path: "/abc",
 								headers: "",
 							},
 						],
@@ -256,7 +256,7 @@ describe("unit/assertSetupRequest.js", () => {
 					input: {
 						files: [
 							{
-								path: "abc",
+								path: "/abc",
 								headers: [],
 							},
 						],
@@ -267,7 +267,7 @@ describe("unit/assertSetupRequest.js", () => {
 					input: {
 						files: [
 							{
-								path: "abc",
+								path: "/abc",
 								headers: false,
 							},
 						],
@@ -278,7 +278,7 @@ describe("unit/assertSetupRequest.js", () => {
 					input: {
 						files: [
 							{
-								path: "abc",
+								path: "/abc",
 								headers: {
 									"abc": 0,
 								},
@@ -291,7 +291,7 @@ describe("unit/assertSetupRequest.js", () => {
 					input: {
 						files: [
 							{
-								path: "abc",
+								path: "/abc",
 								headers: {
 									"abc": [],
 								},
@@ -304,7 +304,7 @@ describe("unit/assertSetupRequest.js", () => {
 					input: {
 						files: [
 							{
-								path: "abc",
+								path: "/abc",
 								headers: {
 									"abc": {},
 								},
@@ -317,10 +317,20 @@ describe("unit/assertSetupRequest.js", () => {
 					input: {
 						files: [
 							{
-								path: "abc",
+								path: "/abc",
 								headers: {
 									"abc": false,
 								},
+							},
+						],
+					},
+				},
+				{
+					description: "path does not start with slash",
+					input: {
+						files: [
+							{
+								path: "abc",
 							},
 						],
 					},
@@ -375,10 +385,18 @@ describe("unit/assertSetupRequest.js", () => {
 					},
 				},
 				{
-					description: "mime is number",
+					description: "path does not start with slash",
 					input: {
 						catchAllFile: {
 							path: "abc",
+						},
+					},
+				},
+				{
+					description: "mime is number",
+					input: {
+						catchAllFile: {
+							path: "/abc",
 							mime: 1,
 						},
 					},
@@ -387,7 +405,7 @@ describe("unit/assertSetupRequest.js", () => {
 					description: "mime is false",
 					input: {
 						catchAllFile: {
-							path: "abc",
+							path: "/abc",
 							mime: false,
 						},
 					},
@@ -396,7 +414,7 @@ describe("unit/assertSetupRequest.js", () => {
 					description: "mime is object",
 					input: {
 						catchAllFile: {
-							path: "abc",
+							path: "/abc",
 							mime: {},
 						},
 					},
@@ -405,7 +423,7 @@ describe("unit/assertSetupRequest.js", () => {
 					description: "mime is array",
 					input: {
 						catchAllFile: {
-							path: "abc",
+							path: "/abc",
 							mime: [],
 						},
 					},
@@ -414,7 +432,7 @@ describe("unit/assertSetupRequest.js", () => {
 					description: "mime is empty string",
 					input: {
 						catchAllFile: {
-							path: "abc",
+							path: "/abc",
 							mime: "",
 						},
 					},
@@ -423,7 +441,7 @@ describe("unit/assertSetupRequest.js", () => {
 					description: "statusCode is string",
 					input: {
 						catchAllFile: {
-							path: "abc",
+							path: "/abc",
 							statusCode: "1",
 						},
 					},
@@ -432,7 +450,7 @@ describe("unit/assertSetupRequest.js", () => {
 					description: "statusCode is 0",
 					input: {
 						catchAllFile: {
-							path: "abc",
+							path: "/abc",
 							statusCode: 0,
 						},
 					},
@@ -441,7 +459,7 @@ describe("unit/assertSetupRequest.js", () => {
 					description: "statusCode is array",
 					input: {
 						catchAllFile: {
-							path: "abc",
+							path: "/abc",
 							statusCode: [],
 						},
 					},
@@ -450,7 +468,7 @@ describe("unit/assertSetupRequest.js", () => {
 					description: "statusCode is object",
 					input: {
 						catchAllFile: {
-							path: "abc",
+							path: "/abc",
 							statusCode: {},
 						},
 					},
@@ -459,7 +477,7 @@ describe("unit/assertSetupRequest.js", () => {
 					description: "statusCode is false",
 					input: {
 						catchAllFile: {
-							path: "abc",
+							path: "/abc",
 							statusCode: false,
 						},
 					},
@@ -468,7 +486,7 @@ describe("unit/assertSetupRequest.js", () => {
 					description: "headers is number",
 					input: {
 						catchAllFile: {
-							path: "abc",
+							path: "/abc",
 							headers: 0,
 						},
 					},
@@ -477,7 +495,7 @@ describe("unit/assertSetupRequest.js", () => {
 					description: "headers is string",
 					input: {
 						catchAllFile: {
-							path: "abc",
+							path: "/abc",
 							headers: "",
 						},
 					},
@@ -486,7 +504,7 @@ describe("unit/assertSetupRequest.js", () => {
 					description: "headers is array",
 					input: {
 						catchAllFile: {
-							path: "abc",
+							path: "/abc",
 							headers: [],
 						},
 					},
@@ -495,7 +513,7 @@ describe("unit/assertSetupRequest.js", () => {
 					description: "headers is false",
 					input: {
 						catchAllFile: {
-							path: "abc",
+							path: "/abc",
 							headers: false,
 						},
 					},
@@ -504,7 +522,7 @@ describe("unit/assertSetupRequest.js", () => {
 					description: "headers values are number",
 					input: {
 						catchAllFile: {
-							path: "abc",
+							path: "/abc",
 							headers: {
 								"abc": 0,
 							},
@@ -515,7 +533,7 @@ describe("unit/assertSetupRequest.js", () => {
 					description: "headers values are array",
 					input: {
 						catchAllFile: {
-							path: "abc",
+							path: "/abc",
 							headers: {
 								"abc": [],
 							},
@@ -526,7 +544,7 @@ describe("unit/assertSetupRequest.js", () => {
 					description: "headers values are object",
 					input: {
 						catchAllFile: {
-							path: "abc",
+							path: "/abc",
 							headers: {
 								"abc": {},
 							},
@@ -537,7 +555,7 @@ describe("unit/assertSetupRequest.js", () => {
 					description: "headers values are false",
 					input: {
 						catchAllFile: {
-							path: "abc",
+							path: "/abc",
 							headers: {
 								"abc": false,
 							},
@@ -593,7 +611,7 @@ describe("unit/assertSetupRequest.js", () => {
 					},
 					files: [],
 					catchAllFile: {
-						path: "no-overrides",
+						path: "/no-overrides",
 					},
 				},
 				expected: {
@@ -602,7 +620,7 @@ describe("unit/assertSetupRequest.js", () => {
 					},
 					files: [],
 					catchAllFile: {
-						path: "no-overrides",
+						path: "/no-overrides",
 						mime: null,
 						statusCode: null,
 						headers: {},
@@ -616,16 +634,16 @@ describe("unit/assertSetupRequest.js", () => {
 					globalHeaders: {},
 					files: [
 						{
-							path: "no-overrides",
+							path: "/no-overrides",
 						},
 						{
-							path: "explicit nulls",
+							path: "/explicit-nulls",
 							mime: null,
 							statusCode: null,
 							headers: null,
 						},
 						{
-							path: "overridden values",
+							path: "/overridden-values",
 							mime: "text/abc",
 							statusCode: 123,
 							headers: {
@@ -633,11 +651,11 @@ describe("unit/assertSetupRequest.js", () => {
 							},
 						},
 						{
-							path: "empty headers",
+							path: "/empty-headers",
 							headers: {},
 						},
 						{
-						path: "headers with content",
+							path: "/headers-with-content",
 							headers: {
 								"abc": "123",
 								"def": null,
@@ -646,7 +664,7 @@ describe("unit/assertSetupRequest.js", () => {
 						},
 					],
 					catchAllFile: {
-						path: "catch-all file",
+						path: "/catch-all-file",
 						mime: null,
 						statusCode: null,
 						headers: null,
@@ -656,19 +674,19 @@ describe("unit/assertSetupRequest.js", () => {
 					globalHeaders: {},
 					files: [
 						{
-							path: "no-overrides",
+							path: "/no-overrides",
 							mime: null,
 							statusCode: null,
 							headers: {},
 						},
 						{
-							path: "explicit nulls",
+							path: "/explicit-nulls",
 							mime: null,
 							statusCode: null,
 							headers: {},
 						},
 						{
-							path: "overridden values",
+							path: "/overridden-values",
 							mime: "text/abc",
 							statusCode: 123,
 							headers: {
@@ -676,13 +694,13 @@ describe("unit/assertSetupRequest.js", () => {
 							},
 						},
 						{
-							path: "empty headers",
+							path: "/empty-headers",
 							mime: null,
 							statusCode: null,
 							headers: {},
 						},
 						{
-							path: "headers with content",
+							path: "/headers-with-content",
 							mime: null,
 							statusCode: null,
 							headers: {
@@ -692,7 +710,7 @@ describe("unit/assertSetupRequest.js", () => {
 						},
 					],
 					catchAllFile: {
-						path: "catch-all file",
+						path: "/catch-all-file",
 						mime: null,
 						statusCode: null,
 						headers: {},
@@ -704,7 +722,7 @@ describe("unit/assertSetupRequest.js", () => {
 				description: "Catch-all file have all values set",
 				input: {
 					catchAllFile: {
-						path: "overridden values",
+						path: "/overridden-values",
 						mime: "text/abc",
 						statusCode: 123,
 						headers: {
@@ -716,7 +734,7 @@ describe("unit/assertSetupRequest.js", () => {
 					globalHeaders: {},
 					files: [],
 					catchAllFile: {
-						path: "overridden values",
+						path: "/overridden-values",
 						mime: "text/abc",
 						statusCode: 123,
 						headers: {
@@ -730,7 +748,7 @@ describe("unit/assertSetupRequest.js", () => {
 				description: "Catch-all file have empty headers",
 				input: {
 					catchAllFile: {
-						path: "empty headers",
+						path: "/empty-headers",
 						headers: {},
 					},
 				},
@@ -738,7 +756,7 @@ describe("unit/assertSetupRequest.js", () => {
 					globalHeaders: {},
 					files: [],
 					catchAllFile: {
-						path: "empty headers",
+						path: "/empty-headers",
 						mime: null,
 						statusCode: null,
 						headers: {},
@@ -750,7 +768,7 @@ describe("unit/assertSetupRequest.js", () => {
 				description: "Catch-all file have content in headers, both string and null",
 				input: {
 					catchAllFile: {
-						path: "headers with content",
+						path: "/headers-with-content",
 						headers: {
 							"abc": "123",
 							"def": null,
@@ -762,7 +780,7 @@ describe("unit/assertSetupRequest.js", () => {
 					globalHeaders: {},
 					files: [],
 					catchAllFile: {
-						path: "headers with content",
+						path: "/headers-with-content",
 						mime: null,
 						statusCode: null,
 						headers: {

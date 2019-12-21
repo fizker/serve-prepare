@@ -64,6 +64,9 @@ function assertFile(file/*: mixed*/) /*: FileOverride*/ {
 	if(typeof path !== "string") {
 		throw new Error("Each file must have a path")
 	}
+	if(path[0] !== "/") {
+		throw new Error("File paths must start with `/`")
+	}
 	if(mime != null && typeof mime !== "string") {
 		throw new Error("The mime-type must be omitted (auto-detected) or a string")
 	}
