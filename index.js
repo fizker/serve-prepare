@@ -1,6 +1,7 @@
 // @flow strict
 
 const buildCommand = require("./src/commands/build")
+const createSetupRequest = require("./src/commands/createSetupRequest")
 
 const [ , , command, ...argv ] = process.argv
 
@@ -9,6 +10,7 @@ const usageText =
 
 Supported commands:
 	build <path to request config>
+	create-setup-request <output folder or file>
 `.trim()
 
 class UnknownCommandError extends Error {
@@ -29,6 +31,8 @@ async function exec(command/*: ?string*/, argv/*: $ReadOnlyArray<string>*/) /*: 
 	switch(command) {
 		case "build":
 			return buildCommand(argv)
+		case "create-setup-request":
+			return createSetupRequest(argv)
 		default:
 			throw new UnknownCommandError(command)
 	}

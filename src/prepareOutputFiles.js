@@ -7,6 +7,7 @@ const stream = require("stream")
 
 const createOutputFolders = require("./createOutputFolders")
 const getAllFolders = require("./getAllFolders")
+const createPromiseForStream = require("./createPromiseForStream")
 
 /*::
 import type { Folders, Sizes } from "./types"
@@ -68,14 +69,6 @@ async function compressAndGetSize(folders, key, filename, inputStream) {
 	)
 	const stat = await fs.promises.stat(output)
 	return stat.size
-}
-
-function createPromiseForStream(stream/*: stream$Stream*/) /*: Promise<void>*/ {
-	return new Promise((res, rej) => {
-		stream
-		.on("error", rej)
-		.on("close", res)
-	})
 }
 
 function getCompressorForType(type/*: "identity"|"brotli"|"gzip"|"deflate"*/) /*: stream$Duplex*/ {
