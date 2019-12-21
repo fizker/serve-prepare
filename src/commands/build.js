@@ -2,13 +2,12 @@
 
 const fs = require("fs")
 const path = require("path")
-const util = require("util")
-const glob = util.promisify(require("glob"))
 const mime = require("mime")
 
 const assertSetupRequest = require("../assertSetupRequest")
 const createOutputFolders = require("../createOutputFolders")
 const prepareOutputFiles = require("../prepareOutputFiles")
+const listFiles = require("../listFiles")
 
 /*::
 import type { ServerSetup, Folders } from "../types"
@@ -26,7 +25,7 @@ async function cmd(argv/*: $ReadOnlyArray<string>*/) {
 		// $FlowFixMe flow 0.114.0 does not support the recursive statement
 		{ recursive: true })
 
-	const allFiles = await glob("**/*", { cwd: targetDir, nodir: true })
+	const allFiles = await listFiles(targetDir)
 	const folders = await createOutputFolders(outputDir)
 	const sizes = await prepareOutputFiles(targetDir, folders, allFiles)
 

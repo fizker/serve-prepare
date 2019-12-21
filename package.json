@@ -7,7 +7,6 @@
     "test": "mocha"
   },
   "dependencies": {
-    "glob": "^7.1.6",
     "mime": "^2.4.4"
   },
   "devDependencies": {
