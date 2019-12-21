@@ -67,7 +67,7 @@ describe("unit/assertSetupRequest.js", () => {
 				})
 			}
 		})
-		describe("`catchAllFile`", () => {
+		describe("`files`", () => {
 			const tests = [
 				{
 					description: "number",
@@ -323,6 +323,19 @@ describe("unit/assertSetupRequest.js", () => {
 								},
 							},
 						],
+					},
+				},
+				{
+					description: "overlapping catchAllFile",
+					input: {
+						files: [
+							{
+								path: "/abc",
+							},
+						],
+						catchAllFile: {
+							path: "/abc",
+						},
 					},
 				},
 			]
@@ -633,7 +646,7 @@ describe("unit/assertSetupRequest.js", () => {
 						},
 					],
 					catchAllFile: {
-						path: "explicit nulls",
+						path: "catch-all file",
 						mime: null,
 						statusCode: null,
 						headers: null,
@@ -679,7 +692,7 @@ describe("unit/assertSetupRequest.js", () => {
 						},
 					],
 					catchAllFile: {
-						path: "explicit nulls",
+						path: "catch-all file",
 						mime: null,
 						statusCode: null,
 						headers: {},

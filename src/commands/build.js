@@ -29,26 +29,42 @@ async function cmd(argv/*: $ReadOnlyArray<string>*/) {
 	const folders = await createOutputFolders(outputDir)
 	const sizes = await prepareOutputFiles(targetDir, folders, allFiles)
 
+	if(request.catchAllFile) {
+		request.files = request.files.concat(request.catchAllFile)
+	}
+
+	const files = sizes.map(({ path, sizes }) => {
+		const overrides = request.files.find(x => x.path === path) || { headers: {} }
+		const mimeType = overrides.mime || "" || mime.getType(path)
+		if(mimeType == null) {
+			throw new Error(`Could not determine mime-type for ${path}`)
+		}
+
+		return {
+			path,
+			sizes,
+			statusCode: overrides.statusCode || 0 || 200,
+			headers: overrides.headers,
+			mime: mimeType,
+		}
+	})
+
+	let catchAllFile = null
+	if(request.catchAllFile) {
+		const caf = request.catchAllFile
+		const index = files.findIndex(x => x.path === caf.path)
+		if(index < 0) {
+			throw new Error("CatchAllFile is missing")
+		}
+		[ catchAllFile ] = files.splice(index, 1)
+	}
+
 	const setup = {
 		aliases: [],
 		folders: denormalizeFolders(outputDir, folders),
-		catchAllFile: null,
+		catchAllFile,
 		globalHeaders: request.globalHeaders,
-		files: sizes.map(({ path, sizes }) => {
-			const overrides = request.files.find(x => x.path === path) || { headers: {} }
-			const mimeType = overrides.mime || "" || mime.getType(path)
-			if(mimeType == null) {
-				throw new Error(`Could not determine mime-type for ${path}`)
-			}
-
-			return {
-				path,
-				sizes,
-				statusCode: overrides.statusCode || 0 || 200,
-				headers: overrides.headers,
-				mime: mimeType,
-			}
-		}),
+		files,
 	}
 
 	await fs.promises.writeFile(path.join(outputDir, "setup.json"), JSON.stringify(setup, null, 2))

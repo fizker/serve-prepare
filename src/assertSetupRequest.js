@@ -43,6 +43,10 @@ function assertSetupRequest(raw/*: JSONObject*/) /*: SetupRequest*/ {
 
 	const caf = catchAllFile == null ? null : assertFile(catchAllFile)
 
+	if(caf != null && realFiles.find(x => x.path === caf.path)) {
+		throw new Error("Please don't add catch-all file to list of files")
+	}
+
 	return {
 		files: realFiles,
 		globalHeaders: assertHeaders(globalHeaders),
