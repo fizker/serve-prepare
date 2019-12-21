@@ -11,8 +11,6 @@ export type FileOverride = {
 }
 
 export type SetupRequest = {
-	target: string,
-	output: string,
 	aliases: $ReadOnlyArray<Alias>,
 	globalHeaders: Headers,
 	files: $ReadOnlyArray<FileOverride>,
@@ -30,18 +28,9 @@ function assertSetupRequest(raw/*: JSONObject*/) /*: SetupRequest*/ {
 	const {
 		globalHeaders,
 		files,
-		target,
-		output,
 		catchAllFile,
 		aliases,
 	} = raw
-
-	if(typeof target !== "string") {
-		throw new Error("Property target is required")
-	}
-	if(typeof output !== "string") {
-		throw new Error("Property output is required")
-	}
 
 	let realFiles/*: $ReadOnlyArray<FileOverride>*/
 	if(files == null) {
@@ -55,8 +44,6 @@ function assertSetupRequest(raw/*: JSONObject*/) /*: SetupRequest*/ {
 	const caf = catchAllFile == null ? null : assertFile(catchAllFile)
 
 	return {
-		target,
-		output,
 		files: realFiles,
 		globalHeaders: assertHeaders(globalHeaders),
 		catchAllFile: caf,

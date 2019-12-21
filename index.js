@@ -9,7 +9,7 @@ const usageText =
 `Usage: serve-prepare <command> <command options ...>
 
 Supported commands:
-	build <path to request config>
+	build --request=<path to request config> --target=<path to target dir> --output=<path to output dir>
 	create-setup-request <output folder or file>
 `.trim()
 
