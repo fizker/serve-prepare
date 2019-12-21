@@ -1,7 +1,7 @@
 // @flow strict
 
 /*::
-import type { Headers } from "./types"
+import type { Headers, Alias } from "./types"
 
 export type FileOverride = {
 	path: string,
@@ -11,10 +11,11 @@ export type FileOverride = {
 }
 
 export type SetupRequest = {
-	globalHeaders: Headers,
-	files: $ReadOnlyArray<FileOverride>,
 	target: string,
 	output: string,
+	aliases: $ReadOnlyArray<Alias>,
+	globalHeaders: Headers,
+	files: $ReadOnlyArray<FileOverride>,
 	catchAllFile: ?FileOverride
 }
 
@@ -32,6 +33,7 @@ function assertSetupRequest(raw/*: JSONObject*/) /*: SetupRequest*/ {
 		target,
 		output,
 		catchAllFile,
+		aliases,
 	} = raw
 
 	if(typeof target !== "string") {
@@ -58,6 +60,7 @@ function assertSetupRequest(raw/*: JSONObject*/) /*: SetupRequest*/ {
 		files: realFiles,
 		globalHeaders: assertHeaders(globalHeaders),
 		catchAllFile: caf,
+		aliases: assertAliases(aliases),
 	}
 }
 
@@ -95,7 +98,7 @@ function assertHeaders(input/*: mixed*/) /*: Headers*/ {
 		return {}
 	}
 
-	if(typeof input !== "object" ||  Array.isArray(input)) {
+	if(typeof input !== "object" || Array.isArray(input)) {
 		throw new Error("Headers must be a string-string object")
 	}
 
@@ -110,4 +113,28 @@ function assertHeaders(input/*: mixed*/) /*: Headers*/ {
 		o[k] = val
 		return o
 	}, {})
+}
+
+function assertAliases(input/*: mixed*/) /*: $ReadOnlyArray<Alias>*/ {
+	if(input == null) {
+		return []
+	}
+
+	if(!Array.isArray(input)) {
+		throw new Error("Aliases must be an array of aliases")
+	}
+
+	return input.map(x => {
+		if(x == null || typeof x !== "object") {
+			throw new Error("Aliases must be an array of aliases")
+		}
+
+		const { from, to } = x
+
+		if(typeof from !== "string" || typeof to !== "string") {
+			throw new Error("Alias objects must have a `to` and `from` string")
+		}
+
+		return { to, from }
+	})
 }

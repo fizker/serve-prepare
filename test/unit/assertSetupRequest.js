@@ -772,6 +772,7 @@ describe("unit/assertSetupRequest.js", () => {
 					globalHeaders: {},
 					files: [],
 					catchAllFile: null,
+					aliases: [],
 				},
 			},
 			{
@@ -789,6 +790,7 @@ describe("unit/assertSetupRequest.js", () => {
 					globalHeaders: {},
 					files: [],
 					catchAllFile: null,
+					aliases: [],
 				},
 			},
 			{
@@ -818,6 +820,7 @@ describe("unit/assertSetupRequest.js", () => {
 						statusCode: null,
 						headers: {},
 					},
+					aliases: [],
 				},
 			},
 			{
@@ -911,6 +914,7 @@ describe("unit/assertSetupRequest.js", () => {
 						statusCode: null,
 						headers: {},
 					},
+					aliases: [],
 				},
 			},
 			{
@@ -940,6 +944,7 @@ describe("unit/assertSetupRequest.js", () => {
 							"abc": "foo",
 						},
 					},
+					aliases: [],
 				},
 			},
 			{
@@ -963,6 +968,7 @@ describe("unit/assertSetupRequest.js", () => {
 						statusCode: null,
 						headers: {},
 					},
+					aliases: [],
 				},
 			},
 			{
@@ -993,6 +999,27 @@ describe("unit/assertSetupRequest.js", () => {
 							"ghi": "",
 						},
 					},
+					aliases: [],
+				},
+			},
+			{
+				description: "Aliases present",
+				input: {
+					target: "abc",
+					output: "def",
+					aliases: [
+						{ from: "/a", to: "/b" },
+					]
+				},
+				expected: {
+					target: "abc",
+					output: "def",
+					globalHeaders: {},
+					files: [],
+					catchAllFile: null,
+					aliases: [
+						{ from: "/a", to: "/b" },
+					],
 				},
 			},
 		]
