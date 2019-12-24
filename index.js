@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 // @flow strict
 
 const buildCommand = require("./src/commands/build")
