@@ -12,4 +12,6 @@ module.exports = async function(argv/*: $ReadOnlyArray<string>*/) {
 	const stream = fs.createReadStream(path.join(__dirname, "../../sample-serve-setup-request.json"))
 		.pipe(fs.createWriteStream(outputPath))
 	await createPromiseForStream(stream)
+
+	return `Created ${outputPath}`
 }

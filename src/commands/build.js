@@ -68,6 +68,8 @@ async function cmd(argv/*: $ReadOnlyArray<string>*/) {
 	}
 
 	await fs.promises.writeFile(path.join(outputDir, "setup.json"), JSON.stringify(setup, null, 2))
+
+	return `Finished preparing output in ${outputDir}`
 }
 
 function denormalizeFolders(outputDir/*: string*/, absoluteFolders/*: Folders*/) /*: Folders */ {

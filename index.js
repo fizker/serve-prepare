@@ -2,6 +2,7 @@
 
 const buildCommand = require("./src/commands/build")
 const createSetupRequest = require("./src/commands/createSetupRequest")
+const createDockerfile = require("./src/commands/createDockerfile")
 
 const [ , , command, ...argv ] = process.argv
 
@@ -10,7 +11,8 @@ const usageText =
 
 Supported commands:
 	build --request=<path to request config> --target=<path to target dir> --output=<path to output dir>
-	create-setup-request <output folder or file>
+	create-setup-request <output folder or file> [--force]
+	create-dockerfile [--dockerfile=<path to docker file>] [--ignoreFile=<path to docker ignore file>] [--force]
 `.trim()
 
 class UnknownCommandError extends Error {
@@ -23,7 +25,7 @@ ${usageText}`
 	}
 }
 
-async function exec(command/*: ?string*/, argv/*: $ReadOnlyArray<string>*/) /*: Promise<void>*/ {
+async function exec(command/*: ?string*/, argv/*: $ReadOnlyArray<string>*/) /*: Promise<string>*/ {
 	if(command == null) {
 		throw new Error(usageText)
 	}
@@ -33,6 +35,8 @@ async function exec(command/*: ?string*/, argv/*: $ReadOnlyArray<string>*/) /*: 
 			return buildCommand(argv)
 		case "create-setup-request":
 			return createSetupRequest(argv)
+		case "create-dockerfile":
+			return createDockerfile(argv)
 		default:
 			throw new UnknownCommandError(command)
 	}
@@ -40,7 +44,7 @@ async function exec(command/*: ?string*/, argv/*: $ReadOnlyArray<string>*/) /*: 
 
 exec(command, argv)
 	.then(
-		() => { console.log("all done") },
+		(response) => { console.log(response) },
 		(e) => {
 			console.error(e.message)
 			process.exit(1)
