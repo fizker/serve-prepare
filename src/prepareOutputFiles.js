@@ -18,6 +18,7 @@ async function prepareOutputFiles(
 	inputFolder/*: string*/,
 	folders/*: Folders*/,
 	files/*: $ReadOnlyArray<string>*/,
+	isCompressionSkipped/*: boolean*/,
 ) /*: Promise<$ReadOnlyArray<{ path: string, sizes: Sizes }>>*/ {
 	const allFolders = getAllFolders(files, { leafsOnly: true })
 
@@ -33,7 +34,7 @@ async function prepareOutputFiles(
 
 	return Promise.all(files.map(async (path) => ({
 		path: "/" + path,
-		sizes: await prepareFile(inputFolder, folders, path)
+		sizes: await prepareFile(inputFolder, folders, path, isCompressionSkipped)
 	})))
 }
 
@@ -41,13 +42,14 @@ async function prepareFile(
 	inputFolder/*: string*/,
 	folders/*: Folders*/,
 	filename/*: string*/,
+	isCompressionSkipped/*: boolean*/,
 ) /*: Promise<Sizes>*/ {
 	const inputStream = fs.createReadStream(path.join(inputFolder, filename))
 	const [ identity, gzip, deflate, brotli ] = await Promise.all([
 		compressAndGetSize(folders, "identity", filename, inputStream),
-		compressAndGetSize(folders, "gzip", filename, inputStream),
-		compressAndGetSize(folders, "deflate", filename, inputStream),
-		compressAndGetSize(folders, "brotli", filename, inputStream),
+		isCompressionSkipped ? null : compressAndGetSize(folders, "gzip", filename, inputStream),
+		isCompressionSkipped ? null : compressAndGetSize(folders, "deflate", filename, inputStream),
+		isCompressionSkipped ? null : compressAndGetSize(folders, "brotli", filename, inputStream),
 	])
 
 	return {

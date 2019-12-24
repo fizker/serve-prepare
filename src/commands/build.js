@@ -16,7 +16,7 @@ import type { ServerSetup, Folders } from "../types"
 module.exports = cmd
 
 async function cmd(argv/*: $ReadOnlyArray<string>*/) {
-	const { requestPath, targetDir, outputDir } = parseArgv(argv)
+	const { requestPath, targetDir, outputDir, isCompressionSkipped } = parseArgv(argv)
 
 	const rawRequest = await fs.promises.readFile(requestPath, "utf-8")
 	const request = assertSetupRequest(JSON.parse(rawRequest))
@@ -27,7 +27,7 @@ async function cmd(argv/*: $ReadOnlyArray<string>*/) {
 
 	const allFiles = await listFiles(targetDir)
 	const folders = await createOutputFolders(outputDir)
-	const sizes = await prepareOutputFiles(targetDir, folders, allFiles)
+	const sizes = await prepareOutputFiles(targetDir, folders, allFiles, isCompressionSkipped)
 
 	if(request.catchAllFile) {
 		request.files = request.files.concat(request.catchAllFile)
@@ -81,10 +81,11 @@ function denormalizeFolders(outputDir/*: string*/, absoluteFolders/*: Folders*/)
 	}
 }
 
-function parseArgv(argv/*: $ReadOnlyArray<string>*/) /*: { requestPath: string, targetDir: string, outputDir: string }*/{
+function parseArgv(argv/*: $ReadOnlyArray<string>*/) /*: { requestPath: string, targetDir: string, outputDir: string, isCompressionSkipped: boolean }*/{
 	const rawRequestPath = argv.find(x => x.startsWith("--request"))
 	const rawTargetDir = argv.find(x => x.startsWith("--target"))
 	const rawOutputDir = argv.find(x => x.startsWith("--output"))
+	const isCompressionSkipped = argv.includes("--skip-compression") || process.env.SERVE_SKIP_COMPRESSION === "true"
 
 	if(rawRequestPath == null || rawTargetDir == null || rawOutputDir == null) {
 		throw new Error("Command usage: build --request=<path to request config> --target=<path to target dir> --output=<path to output dir>")
@@ -94,5 +95,5 @@ function parseArgv(argv/*: $ReadOnlyArray<string>*/) /*: { requestPath: string, 
 	const targetDir = path.resolve(rawTargetDir.replace("--target=", ""))
 	const outputDir = path.resolve(rawOutputDir.replace("--output=", ""))
 
-	return { requestPath, targetDir, outputDir }
+	return { requestPath, targetDir, outputDir, isCompressionSkipped }
 }

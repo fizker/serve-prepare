@@ -10,7 +10,7 @@ const usageText =
 `Usage: serve-prepare <command> <command options ...>
 
 Supported commands:
-	build --request=<path to request config> --target=<path to target dir> --output=<path to output dir>
+	build --request=<path to request config> --target=<path to target dir> --output=<path to output dir> [--skip-compression]
 	create-setup-request <output folder or file> [--force]
 	create-dockerfile [--dockerfile=<path to docker file>] [--ignoreFile=<path to docker ignore file>] [--force]
 `.trim()

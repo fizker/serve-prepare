@@ -12,11 +12,19 @@ type Dirent = {
 }
 */
 
+const blacklist = new Set([
+	".DS_Store",
+])
+
 module.exports = async function listFiles(targetDir/*: string*/, root/*: string*/ = "") /*: Promise<$ReadOnlyArray<string>>*/ {
 	// $FlowFixMe flow v0.114.0 have incorrect typing for fs
 	const list/*: $ReadOnlyArray<Dirent>*/ = await fs.promises.readdir(targetDir, { withFileTypes: true })
 
 	const all = await Promise.all(list.map((entry) => {
+		if(blacklist.has(entry.name)) {
+			return []
+		}
+
 		const p = path.join(root, entry.name)
 		if(entry.isDirectory()) {
 			return listFiles(path.join(targetDir, root, entry.name), p)
