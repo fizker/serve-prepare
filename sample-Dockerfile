@@ -58,6 +58,7 @@ RUN npm install @fizker/serve@1
 # Copy the pre-built files in
 COPY --from=builder /root/output ./output
 
+ENV PORT=8080
 ENTRYPOINT npx serve output/setup.json
 
 
