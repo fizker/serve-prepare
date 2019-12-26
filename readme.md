@@ -53,11 +53,12 @@ Running `npx flow serve-prepare create-dockerfile` will create a sample .dockeri
 
 The sample file includes comments explaining the parts. Some parts might be different depending on the specific project. These are marked with `###`.
 
-The following is of particular note:
+The following are of particular note:
 
 - There is an expectation that the raw files are created by running `npx webpack`. This should be changed if necessary.
 - There is an expectation that the raw files are placed in a folder called `/static`. This should be changed as necessary.
 - If private NPM repositories are in play, add authentication to an `.npmrc` file and copy that in before running `npm install`.
+- HTTPS/HTTP2 support is done by copying certificates into the container in the last stage. There are some default filenames baked into the image. Please make sure that they correspond to real files, or remove/comment the HTTPS lines; [@fizker/serve][1] will operate in HTTP-only mode if any of the three HTTPS env vars are missing.
 
 
 ### sample serve-setup-request.json

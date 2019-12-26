@@ -55,6 +55,10 @@ WORKDIR /root
 # Install the server
 RUN npm install @fizker/serve@1
 
+### Copy HTTPS certificates
+COPY key.pem cert.pem ./https/
+ENV HTTPS_KEY=https/key.pem HTTPS_CERT=https/cert.pem HTTPS_PORT=8081
+
 # Copy the pre-built files in
 COPY --from=builder /root/output ./output
 
