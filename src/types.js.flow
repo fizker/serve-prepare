@@ -1,41 +1,17 @@
 // @flow strict
 
-export type Alias = {
-	from: string,
-	to: string,
-}
+import type { Headers, Alias } from "@fizker/serve"
 
-export type Sizes = {
-	identity: number,
-	deflate: ?number,
-	gzip: ?number,
-	brotli: ?number,
-}
-
-export type Headers = {
-	[string]: string,
-	...
-}
-
-export type File = {
+export type FileOverride = {
 	path: string,
-	mime: string,
-	sizes: Sizes,
-	statusCode: number,
+	mime: ?string,
+	statusCode: ?number,
 	headers: Headers,
 }
 
-export type Folders = {
-	identity: string,
-	deflate: string,
-	gzip: string,
-	brotli: string,
-}
-
-export type ServerSetup = {
+export type SetupRequest = {
 	aliases: $ReadOnlyArray<Alias>,
-	folders: Folders,
-	files: $ReadOnlyArray<File>,
-	catchAllFile: ?File,
 	globalHeaders: Headers,
+	files: $ReadOnlyArray<FileOverride>,
+	catchAllFile: ?FileOverride
 }

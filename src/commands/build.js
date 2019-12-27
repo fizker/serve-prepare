@@ -10,7 +10,7 @@ const prepareOutputFiles = require("../prepareOutputFiles")
 const listFiles = require("../listFiles")
 
 /*::
-import type { ServerSetup, Folders } from "../types"
+import type { ServerSetup, Folders } from "@fizker/serve"
 */
 
 module.exports = cmd

@@ -10,7 +10,7 @@ const getAllFolders = require("./getAllFolders")
 const createPromiseForStream = require("./createPromiseForStream")
 
 /*::
-import type { Folders, Sizes } from "./types"
+import type { Folders, Sizes } from "@fizker/serve"
 */
 
 module.exports = prepareOutputFiles

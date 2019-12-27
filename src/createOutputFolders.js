@@ -4,7 +4,7 @@ const path = require("path")
 const fs = require("fs")
 
 /*::
-import type { Folders } from "./types"
+import type { Folders } from "@fizker/serve"
 */
 
 module.exports = createOutputFolders

@@ -1,26 +1,8 @@
 // @flow strict
 
 /*::
-import type { Headers, Alias } from "./types"
-
-export type FileOverride = {
-	path: string,
-	mime: ?string,
-	statusCode: ?number,
-	headers: Headers,
-}
-
-export type SetupRequest = {
-	aliases: $ReadOnlyArray<Alias>,
-	globalHeaders: Headers,
-	files: $ReadOnlyArray<FileOverride>,
-	catchAllFile: ?FileOverride
-}
-
-export type JSONObject = {
-	[string]: mixed,
-	...
-}
+import type { Headers, Alias, JSONObject } from "@fizker/serve"
+import type { FileOverride, SetupRequest } from "./types"
 */
 
 module.exports = assertSetupRequest
