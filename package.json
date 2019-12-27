@@ -8,6 +8,7 @@
     "test": "mocha"
   },
   "dependencies": {
+    "@fizker/serve": "^0.1.0",
     "mime": "^2.4.4"
   },
   "devDependencies": {
