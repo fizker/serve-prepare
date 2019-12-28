@@ -3,7 +3,10 @@
   "version": "0.0.1",
   "description": "Tool for preparing a site for being hosted by @fizker/serve",
   "main": "index.js",
-  "bin": "index.js",
+  "bin": {
+    "serve-prepare": "index.js",
+    "serve": "serve.js"
+  },
   "scripts": {
     "test": "mocha"
   },

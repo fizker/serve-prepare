@@ -13,7 +13,7 @@ module.exports = cmd
 
 async function cmd(argv/*: $ReadOnlyArray<string>*/) {
 	const options = parseArgv(argv)
-	const setup = prepareServerSetup(options)
+	const setup = await prepareServerSetup(options)
 
 	const { outputDir } = options
 
@@ -21,6 +21,8 @@ async function cmd(argv/*: $ReadOnlyArray<string>*/) {
 
 	return `Finished preparing output in ${outputDir}`
 }
+
+cmd.parseArgv = parseArgv
 
 function parseArgv(argv/*: $ReadOnlyArray<string>*/) /*: PrepareServerSetupOptions*/{
 	const rawRequestPath = argv.find(x => x.startsWith("--request"))

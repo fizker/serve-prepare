@@ -2,12 +2,12 @@
 
 const fs = require("fs")
 const path = require("path")
-const mime = require("mime")
 
 const assertSetupRequest = require("./assertSetupRequest")
 const createOutputFolders = require("./createOutputFolders")
 const prepareOutputFiles = require("./prepareOutputFiles")
 const listFiles = require("./listFiles")
+const prepareFile = require("./prepareFile")
 
 /*::
 import type { ServerSetup, Folders } from "@fizker/serve"
@@ -36,21 +36,7 @@ module.exports = async function({ requestPath, targetDir, outputDir, isCompressi
 		request.files = request.files.concat(request.catchAllFile)
 	}
 
-	const files = sizes.map(({ path, sizes }) => {
-		const overrides = request.files.find(x => x.path === path) || { headers: {} }
-		const mimeType = overrides.mime || "" || mime.getType(path)
-		if(mimeType == null) {
-			throw new Error(`Could not determine mime-type for ${path}`)
-		}
-
-		return {
-			path,
-			sizes,
-			statusCode: overrides.statusCode || 0 || 200,
-			headers: overrides.headers,
-			mime: mimeType,
-		}
-	})
+	const files = sizes.map(x => prepareFile(request, x))
 
 	let catchAllFile = null
 	if(request.catchAllFile) {
