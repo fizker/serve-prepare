@@ -7,12 +7,12 @@ const { Server, assertServerSetup } = require("@fizker/serve")
 
 const assertSetupRequest = require("./src/assertSetupRequest")
 const prepareFile = require("./src/prepareFile")
-const { parseArgv } = require("./src/commands/build")
 
 /*::
 import type { ServerSetup } from "@fizker/serve"
 import type { SetupRequest } from "./src/types"
-import type { PrepareServerSetupOptions } from "./src/prepareServerSetup"
+
+type CommandOptions = { targetDir: string, requestPath: string }
 */
 const port = +process.env.PORT || 8080
 const httpsPort = +process.env.HTTPS_PORT || null
@@ -90,7 +90,7 @@ async function prepareHTTPS() /*: Promise<{ port: number, cert: { key: Buffer, c
 	return { port: httpsPort, cert: { key, cert } }
 }
 
-async function createBaseSetup(args/*: PrepareServerSetupOptions*/) /*: Promise<{ request: SetupRequest, setup: ServerSetup }>*/ {
+async function createBaseSetup(args/*: CommandOptions*/) /*: Promise<{ request: SetupRequest, setup: ServerSetup }>*/ {
 	const rawRequest = await fs.promises.readFile(args.requestPath, "utf-8")
 	const request = assertSetupRequest(JSON.parse(rawRequest))
 
@@ -126,4 +126,18 @@ async function createBaseSetup(args/*: PrepareServerSetupOptions*/) /*: Promise<
 			catchAllFile: null,
 		},
 	}
+}
+
+function parseArgv(argv/*: $ReadOnlyArray<string>*/) /*: CommandOptions*/ {
+	const rawRequestPath = argv.find(x => x.startsWith("--request"))
+	const rawTargetDir = argv.find(x => x.startsWith("--target"))
+
+	if(rawRequestPath == null || rawTargetDir == null) {
+		throw new Error("Command usage: serve --request=<path to request config> --target=<path to target dir>")
+	}
+
+	const requestPath = path.resolve(rawRequestPath.replace("--request=", ""))
+	const targetDir = path.resolve(rawTargetDir.replace("--target=", ""))
+
+	return { requestPath, targetDir }
 }

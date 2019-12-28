@@ -7,7 +7,14 @@ const getFilePathFromInput = require("../getFilePathFromInput")
 const copyFile = require("../copyFile")
 
 module.exports = async function(argv/*: $ReadOnlyArray<string>*/) /*: Promise<string>*/ {
-	const { dockerfile, ignoreFile, isForced } = parseArgv(argv)
+	const { dockerfile, ignoreFile, isForced, isDev } = parseArgv(argv)
+
+	if(isDev) {
+		const fileOutput = await getFilePathFromInput(dockerfile, "Dockerfile-dev", isForced)
+		await copyFile(path.join(__dirname, "../../sample-Dockerfile-dev"), fileOutput)
+		return `Created ${fileOutput}`
+	}
+
 	const [ dockerfileOutputPath, dockerignoreOutputPath ] = await Promise.all([
 		getFilePathFromInput(dockerfile, "Dockerfile", isForced),
 		getFilePathFromInput(ignoreFile, ".dockerignore", isForced),
@@ -24,10 +31,11 @@ module.exports = async function(argv/*: $ReadOnlyArray<string>*/) /*: Promise<st
 	].join("\n")
 }
 
-function parseArgv(argv/*: $ReadOnlyArray<string>*/) /*: { dockerfile: string, ignoreFile: string, isForced: boolean }*/{
+function parseArgv(argv/*: $ReadOnlyArray<string>*/) /*: { dockerfile: string, ignoreFile: string, isForced: boolean, isDev: boolean }*/{
 	const rawDockerfile = argv.find(x => x.startsWith("--dockerfile="))
 	const rawIgnoreFile = argv.find(x => x.startsWith("--ignoreFile="))
 	const isForced = argv.includes("--force")
+	const isDev = argv.includes("--dev")
 
 	let dockerfile
 	if(rawDockerfile == null) {
@@ -43,5 +51,5 @@ function parseArgv(argv/*: $ReadOnlyArray<string>*/) /*: { dockerfile: string, i
 		ignoreFile = path.resolve(rawIgnoreFile.replace("--ignoreFile=", ""))
 	}
 
-	return { dockerfile, ignoreFile, isForced }
+	return { dockerfile, ignoreFile, isForced, isDev }
 }

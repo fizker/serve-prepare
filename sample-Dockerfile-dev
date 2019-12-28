@@ -1,0 +1,19 @@
+FROM node:erbium-alpine
+WORKDIR /root
+
+# Installing the serve-prepare script
+RUN npm install --no-save @fizker/serve-prepare@1
+
+# Always skip compression in dev-mode, to save time
+ENV -e SERVE_SKIP_COMPRESSION=true
+
+# Copy the setup-request
+COPY serve-setup-request.json ./serve-setup-request.json
+
+### Copy HTTPS certificates
+COPY key.pem cert.pem ./https/
+ENV HTTPS_KEY=https/key.pem HTTPS_CERT=https/cert.pem HTTPS_PORT=8081
+
+ENV PORT=8080
+
+ENTRYPOINT npx serve --request=serve-setup-request.json --target=target
