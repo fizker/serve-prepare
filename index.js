@@ -4,6 +4,7 @@
 const buildCommand = require("./src/commands/build")
 const createSetupRequest = require("./src/commands/createSetupRequest")
 const createDockerfile = require("./src/commands/createDockerfile")
+const serve = require("./src/commands/serve")
 
 const [ , , command, ...argv ] = process.argv
 
@@ -14,6 +15,7 @@ Supported commands:
 	build --request=<path to request config> --target=<path to target dir> --output=<path to output dir> [--skip-compression]
 	create-setup-request <output folder or file> [--force]
 	create-dockerfile [--dockerfile=<path to docker file>] [--ignoreFile=<path to docker ignore file>] [--force]
+	serve --request=<path to request config> --target=<path to target dir>
 `.trim()
 
 class UnknownCommandError extends Error {
@@ -38,6 +40,8 @@ async function exec(command/*: ?string*/, argv/*: $ReadOnlyArray<string>*/) /*: 
 			return createSetupRequest(argv)
 		case "create-dockerfile":
 			return createDockerfile(argv)
+		case "serve":
+			return serve(argv)
 		default:
 			throw new UnknownCommandError(command)
 	}

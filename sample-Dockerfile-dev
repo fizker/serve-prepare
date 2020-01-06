@@ -16,4 +16,4 @@ ENV HTTPS_KEY=https/key.pem HTTPS_CERT=https/cert.pem HTTPS_PORT=8081
 
 ENV PORT=8080
 
-ENTRYPOINT npx serve --request=serve-setup-request.json --target=target
+ENTRYPOINT npx serve-prepare serve --request=serve-setup-request.json --target=target
