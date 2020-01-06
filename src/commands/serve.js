@@ -72,7 +72,19 @@ module.exports = async function cmd(argv/*: $ReadOnlyArray<string>*/) {
 		logs.push(`Listening to HTTPS on ${ports.https}`)
 	}
 
-	return logs.join("\n")
+	console.log(logs.join("\n"))
+
+	try {
+		await new Promise((resolve, reject) => {
+			process.on("SIGTERM", resolve)
+			process.on("SIGINT", resolve)
+			process.on("error", reject)
+		})
+	} finally {
+		await server.close()
+	}
+
+	return "Server closed"
 }
 
 async function prepareHTTPS() /*: Promise<{ port: number, cert: { key: Buffer, cert: Buffer } }|void>*/ {
