@@ -62,17 +62,29 @@ async function prepareFile(
 	}
 }
 
-async function compressAndGetSize(folders, key, filename, inputStream) {
+async function compressAndGetSize(
+	folders/*: Folders*/,
+	key/*: "identity"|"brotli"|"gzip"|"deflate"*/,
+	filename/*: string*/,
+	inputStream/*: stream$Readable*/,
+) {
 	const compressor = getCompressorForType(key)
 	const output = path.join(folders[key], filename)
 	const outputStream = fs.createWriteStream(output)
+
+	let byteCount = 0
 	await pipeline(
 		inputStream,
 		compressor,
+		new stream.Transform({
+			transform(chunk, encoding, callback) {
+				byteCount += chunk.length
+				callback(null, chunk)
+			},
+		}),
 		outputStream,
 	)
-	const stat = await fs.promises.stat(output)
-	return stat.size
+	return byteCount
 }
 
 function getCompressorForType(type/*: "identity"|"brotli"|"gzip"|"deflate"*/) /*: stream$Duplex*/ {
