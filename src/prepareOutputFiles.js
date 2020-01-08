@@ -4,10 +4,12 @@ const path = require("path")
 const fs = require("fs")
 const zlib = require("zlib")
 const stream = require("stream")
+const util = require("util")
+
+const pipeline = util.promisify(stream.pipeline)
 
 const createOutputFolders = require("./createOutputFolders")
 const getAllFolders = require("./getAllFolders")
-const createPromiseForStream = require("./createPromiseForStream")
 
 /*::
 import type { Folders, Sizes } from "@fizker/serve"
@@ -64,10 +66,10 @@ async function compressAndGetSize(folders, key, filename, inputStream) {
 	const compressor = getCompressorForType(key)
 	const output = path.join(folders[key], filename)
 	const outputStream = fs.createWriteStream(output)
-	await createPromiseForStream(
-		inputStream
-		.pipe(compressor)
-		.pipe(outputStream)
+	await pipeline(
+		inputStream,
+		compressor,
+		outputStream,
 	)
 	const stat = await fs.promises.stat(output)
 	return stat.size

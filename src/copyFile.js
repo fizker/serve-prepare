@@ -1,11 +1,14 @@
 // @flow strict
 
 const fs = require("fs")
-const createPromiseForStream = require("./createPromiseForStream")
+const stream = require("stream")
+const util = require("util")
+
+const pipeline = util.promisify(stream.pipeline)
 
 module.exports = function(input/*: string*/, output/*: string*/) /*: Promise<void>*/ {
-	const stream = fs.createReadStream(input)
-		.pipe(fs.createWriteStream(output))
-
-	return createPromiseForStream(stream)
+	return pipeline(
+		fs.createReadStream(input),
+		fs.createWriteStream(output),
+	)
 }
