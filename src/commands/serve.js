@@ -136,6 +136,7 @@ async function createBaseSetup(args/*: CommandOptions*/) /*: Promise<{ request: 
 						deflate: null,
 						gzip: null,
 					},
+					envReplacements: {},
 				},
 			],
 			catchAllFile: null,

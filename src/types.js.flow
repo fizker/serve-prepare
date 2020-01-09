@@ -1,17 +1,18 @@
 // @flow strict
 
-import type { Headers, Alias } from "@fizker/serve"
+import type { Headers, Alias, EnvReplacements } from "@fizker/serve"
 
 export type FileOverride = {
 	path: string,
 	mime: ?string,
 	statusCode: ?number,
 	headers: Headers,
+	envReplacements: EnvReplacements,
 }
 
 export type SetupRequest = {
 	aliases: $ReadOnlyArray<Alias>,
 	globalHeaders: Headers,
 	files: $ReadOnlyArray<FileOverride>,
-	catchAllFile: ?FileOverride
+	catchAllFile: ?FileOverride,
 }

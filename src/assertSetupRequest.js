@@ -1,7 +1,7 @@
 // @flow strict
 
 /*::
-import type { Headers, Alias, JSONObject } from "@fizker/serve"
+import type { Headers, Alias, JSONObject, EnvReplacements } from "@fizker/serve"
 import type { FileOverride, SetupRequest } from "./types"
 */
 
@@ -42,7 +42,7 @@ function assertFile(file/*: mixed*/) /*: FileOverride*/ {
 		throw new Error("Each file must be an object")
 	}
 
-	const { path, mime, statusCode, headers } = file
+	const { path, mime, statusCode, headers, envReplacements } = file
 	if(typeof path !== "string") {
 		throw new Error("Each file must have a path")
 	}
@@ -66,6 +66,7 @@ function assertFile(file/*: mixed*/) /*: FileOverride*/ {
 		mime: mime || "" || null,
 		statusCode: statusCode || 0 || null,
 		headers: assertHeaders(headers),
+		envReplacements: assertEnvReplacements(envReplacements),
 	}
 }
 
@@ -85,6 +86,28 @@ function assertHeaders(input/*: mixed*/) /*: Headers*/ {
 		}
 		if(typeof val !== "string") {
 			throw new Error("Headers must be a string-string object")
+		}
+		o[k] = val
+		return o
+	}, {})
+}
+
+function assertEnvReplacements(input/*: mixed*/) /*: EnvReplacements*/ {
+	if(input == null) {
+		return {}
+	}
+
+	if(typeof input !== "object" || Array.isArray(input)) {
+		throw new Error("EnvReplacements must be a string-string object")
+	}
+
+	return Object.keys(input).reduce((o, k) => {
+		const val = input[k]
+		if(val == null) {
+			return o
+		}
+		if(typeof val !== "string") {
+			throw new Error("EnvReplacements must be a string-string object")
 		}
 		o[k] = val
 		return o

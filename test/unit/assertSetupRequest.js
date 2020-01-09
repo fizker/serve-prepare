@@ -624,6 +624,7 @@ describe("unit/assertSetupRequest.js", () => {
 						mime: null,
 						statusCode: null,
 						headers: {},
+						envReplacements: {},
 					},
 					aliases: [],
 				},
@@ -678,12 +679,14 @@ describe("unit/assertSetupRequest.js", () => {
 							mime: null,
 							statusCode: null,
 							headers: {},
+							envReplacements: {},
 						},
 						{
 							path: "/explicit-nulls",
 							mime: null,
 							statusCode: null,
 							headers: {},
+							envReplacements: {},
 						},
 						{
 							path: "/overridden-values",
@@ -692,12 +695,14 @@ describe("unit/assertSetupRequest.js", () => {
 							headers: {
 								"abc": "foo",
 							},
+							envReplacements: {},
 						},
 						{
 							path: "/empty-headers",
 							mime: null,
 							statusCode: null,
 							headers: {},
+							envReplacements: {},
 						},
 						{
 							path: "/headers-with-content",
@@ -707,6 +712,7 @@ describe("unit/assertSetupRequest.js", () => {
 								"abc": "123",
 								"ghi": "",
 							},
+							envReplacements: {},
 						},
 					],
 					catchAllFile: {
@@ -714,6 +720,7 @@ describe("unit/assertSetupRequest.js", () => {
 						mime: null,
 						statusCode: null,
 						headers: {},
+						envReplacements: {},
 					},
 					aliases: [],
 				},
@@ -740,6 +747,7 @@ describe("unit/assertSetupRequest.js", () => {
 						headers: {
 							"abc": "foo",
 						},
+						envReplacements: {},
 					},
 					aliases: [],
 				},
@@ -760,6 +768,7 @@ describe("unit/assertSetupRequest.js", () => {
 						mime: null,
 						statusCode: null,
 						headers: {},
+						envReplacements: {},
 					},
 					aliases: [],
 				},
@@ -787,6 +796,7 @@ describe("unit/assertSetupRequest.js", () => {
 							"abc": "123",
 							"ghi": "",
 						},
+						envReplacements: {},
 					},
 					aliases: [],
 				},
@@ -805,6 +815,35 @@ describe("unit/assertSetupRequest.js", () => {
 					aliases: [
 						{ from: "/a", to: "/b" },
 					],
+				},
+			},
+			{
+				description: "Env replacements present",
+				input: {
+					files: [
+						{
+							path: "/abc",
+							envReplacements: {
+								"a": "b",
+							},
+						},
+					],
+				},
+				expected: {
+					globalHeaders: {},
+					files: [
+						{
+							path: "/abc",
+							headers: {},
+							mime: null,
+							statusCode: null,
+							envReplacements: {
+								"a": "b",
+							},
+						},
+					],
+					catchAllFile: null,
+					aliases: [],
 				},
 			},
 		]

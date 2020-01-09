@@ -8,7 +8,7 @@ import type { SetupRequest } from "./types"
 */
 
 module.exports = (request/*: SetupRequest */, { path, sizes }/*: { path: string, sizes: Sizes }*/) /*: File*/ => {
-	const overrides = request.files.find(x => x.path === path) || { headers: {} }
+	const overrides = request.files.find(x => x.path === path) || { headers: {}, envReplacements: {} }
 	const mimeType = overrides.mime || "" || mime.getType(path)
 	if(mimeType == null) {
 		throw new Error(`Could not determine mime-type for ${path}`)
@@ -20,5 +20,6 @@ module.exports = (request/*: SetupRequest */, { path, sizes }/*: { path: string,
 		statusCode: overrides.statusCode || 0 || 200,
 		headers: overrides.headers,
 		mime: mimeType,
+		envReplacements: overrides.envReplacements,
 	}
 }
