@@ -13,12 +13,6 @@
     "@fizker/serve": "^0.1.0",
     "mime": "^2.4.4"
   },
-  "files": [
-    "index.js",
-    "serve.js",
-    "sample*",
-    "src/**/*"
-  ],
   "devDependencies": {
     "chai": "^4.2.0",
     "flow-bin": "^0.114.0",
@@ -29,6 +23,11 @@
     "http",
     "serve",
     "static"
+  ],
+  "files": [
+    "index.js",
+    "sample*",
+    "src/**/*"
   ],
   "author": "Benjamin Horsleben",
   "license": "WTFPL"
