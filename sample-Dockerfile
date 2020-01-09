@@ -63,7 +63,7 @@ ENV HTTPS_KEY=https/key.pem HTTPS_CERT=https/cert.pem HTTPS_PORT=8081
 COPY --from=builder /root/output ./output
 
 ENV PORT=8080
-ENTRYPOINT npx serve output/setup.json
+ENTRYPOINT [ "npx", "serve", "output/setup.json" ]
 
 
 #############################
