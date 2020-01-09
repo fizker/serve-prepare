@@ -2,7 +2,7 @@ FROM node:erbium-alpine
 WORKDIR /root
 
 # Installing the serve-prepare script
-RUN npm install --no-save @fizker/serve-prepare@0.1
+RUN npm install --no-save @fizker/serve-prepare@0.2
 
 # Always skip compression in dev-mode, to save time
 ENV -e SERVE_SKIP_COMPRESSION=true
