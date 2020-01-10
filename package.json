@@ -1,6 +1,6 @@
 {
   "name": "@fizker/serve-prepare",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Tool for preparing a site for being hosted by @fizker/serve",
   "main": "index.js",
   "bin": {
