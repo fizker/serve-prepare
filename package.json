@@ -10,7 +10,7 @@
     "test": "mocha"
   },
   "dependencies": {
-    "@fizker/serve": "^0.2.1",
+    "@fizker/serve": "^0.2.2",
     "mime": "^2.4.4"
   },
   "devDependencies": {

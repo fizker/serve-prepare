@@ -53,7 +53,7 @@ FROM node:erbium-alpine
 WORKDIR /root
 
 # Install the server
-RUN npm install @fizker/serve@0.2
+RUN npm install @fizker/serve@^0.2.2
 
 ### Copy HTTPS certificates
 COPY key.pem cert.pem ./https/
