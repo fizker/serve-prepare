@@ -41,7 +41,7 @@ ARG skip_compression=false
 ENV -e SERVE_SKIP_COMPRESSION=$skip_compression
 
 # Execute the build
-RUN npx serve-prepare build --request=serve-setup-request.json --target=target --output=output
+RUN serve-prepare build --request=serve-setup-request.json --target=target --output=output
 
 
 #############################
@@ -57,13 +57,13 @@ RUN npm install --global @fizker/serve@^0.2.2
 
 ### Copy HTTPS certificates
 COPY key.pem cert.pem ./https/
-ENV HTTPS_KEY=https/key.pem HTTPS_CERT=https/cert.pem HTTPS_PORT=8081
+ENV HTTPS_KEY=https/key.pem HTTPS_CERT=https/cert.pem HTTPS_PORT=443
 
 # Copy the pre-built files in
 COPY --from=builder /root/output ./output
 
-ENV PORT=8080
-ENTRYPOINT [ "npx", "serve", "output/setup.json" ]
+ENV PORT=80
+ENTRYPOINT [ "serve", "output/setup.json" ]
 
 
 #############################
