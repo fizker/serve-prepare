@@ -2,6 +2,7 @@
 
 const path = require("path")
 const fs = require("fs")
+const crypto = require("crypto")
 const zlib = require("zlib")
 const stream = require("stream")
 const util = require("util")
@@ -21,7 +22,7 @@ async function prepareOutputFiles(
 	folders/*: Folders*/,
 	files/*: $ReadOnlyArray<string>*/,
 	isCompressionSkipped/*: boolean*/,
-) /*: Promise<$ReadOnlyArray<{ path: string, sizes: Sizes }>>*/ {
+) /*: Promise<$ReadOnlyArray<{ path: string, sizes: Sizes, hash: string }>>*/ {
 	const allFolders = getAllFolders(files, { leafsOnly: true })
 
 	await Promise.all(Object.keys(folders).map(async (x) => {
@@ -34,10 +35,14 @@ async function prepareOutputFiles(
 		}
 	}))
 
-	return Promise.all(files.map(async (path) => ({
-		path: "/" + path,
-		sizes: await prepareFile(inputFolder, folders, path, isCompressionSkipped)
-	})))
+	return Promise.all(files.map(async (path) => {
+		const { sizes, hash } = await prepareFile(inputFolder, folders, path, isCompressionSkipped)
+		return {
+			path: "/" + path,
+			sizes,
+			hash,
+		}
+	}))
 }
 
 async function prepareFile(
@@ -45,9 +50,10 @@ async function prepareFile(
 	folders/*: Folders*/,
 	filename/*: string*/,
 	isCompressionSkipped/*: boolean*/,
-) /*: Promise<Sizes>*/ {
+) /*: Promise<{ sizes: Sizes, hash: string }>*/ {
 	const inputStream = fs.createReadStream(path.join(inputFolder, filename))
-	const [ identity, gzip, deflate, brotli ] = await Promise.all([
+	const [ hash, identity, gzip, deflate, brotli ] = await Promise.all([
+		getHash(inputStream),
 		compressAndGetSize(folders, "identity", filename, inputStream),
 		isCompressionSkipped ? null : compressAndGetSize(folders, "gzip", filename, inputStream),
 		isCompressionSkipped ? null : compressAndGetSize(folders, "deflate", filename, inputStream),
@@ -55,11 +61,29 @@ async function prepareFile(
 	])
 
 	return {
-		identity,
-		gzip,
-		deflate,
-		brotli,
+		hash,
+		sizes: {
+			identity,
+			gzip,
+			deflate,
+			brotli,
+		},
 	}
+}
+
+async function getHash(inputStream) /*: Promise<string>*/ {
+	let hash = ""
+	await pipeline(
+		inputStream,
+		crypto.createHash("sha256"),
+		new stream.Transform({
+			transform(chunk, encoding, callback) {
+				hash += chunk.toString()
+				callback()
+			},
+		})
+	)
+	return hash
 }
 
 async function compressAndGetSize(
@@ -67,7 +91,7 @@ async function compressAndGetSize(
 	key/*: "identity"|"brotli"|"gzip"|"deflate"*/,
 	filename/*: string*/,
 	inputStream/*: stream$Readable*/,
-) {
+) /*: Promise<number>*/ {
 	const compressor = getCompressorForType(key)
 	const output = path.join(folders[key], filename)
 	const outputStream = fs.createWriteStream(output)

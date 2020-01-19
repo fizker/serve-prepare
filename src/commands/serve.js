@@ -2,13 +2,17 @@
 
 const fs = require("fs")
 const path = require("path")
+const crypto = require("crypto")
+const util = require("util")
+const stream = require("stream")
+const pipeline = util.promisify(stream.pipeline)
 const { Server, assertServerSetup } = require("@fizker/serve")
 
 const assertSetupRequest = require("../assertSetupRequest")
 const prepareFile = require("../prepareFile")
 
 /*::
-import type { ServerSetup } from "@fizker/serve"
+import type { ServerSetup, Sizes } from "@fizker/serve"
 import type { SetupRequest } from "../types"
 
 type CommandOptions = { targetDir: string, requestPath: string }
@@ -17,6 +21,46 @@ const port = +process.env.PORT || 8080
 const httpsPort = +process.env.HTTPS_PORT || null
 const certPath = process.env.HTTPS_CERT
 const keyPath = process.env.HTTPS_KEY
+
+async function getFileSizeAndHash(filepath/*: string*/) /*: Promise<{ sizes: Sizes, hash: string }>*/ {
+	let hash/*: ?string*/
+	let size = 0
+	await pipeline(
+		fs.createReadStream(filepath),
+		new stream.Transform({
+			transform(chunk, encoding, callback) {
+				size += chunk.length
+				callback(null, chunk)
+			},
+		}),
+		crypto.createHash("sha256"),
+		new stream.Transform({
+			transform(chunk, encoding, callback) {
+				if(hash != null) {
+					callback(new Error("crypto.Hash stream unexpectedly generated multiple chunks"))
+					return
+				}
+				// $FlowFixMe flow 0.114 have invalid typedef for crypto.Hash type
+				hash = chunk.toString("hex")
+				callback(null, chunk)
+			},
+		}),
+	)
+
+	if(hash == null) {
+		throw new Error("crypto.Hash unexpected created zero chunks")
+	}
+
+	return {
+		hash,
+		sizes: {
+			identity: size,
+			deflate: null,
+			brotli: null,
+			gzip: null,
+		},
+	}
+}
 
 module.exports = async function cmd(argv/*: $ReadOnlyArray<string>*/) {
 	const args = parseArgv(argv)
@@ -28,37 +72,25 @@ module.exports = async function cmd(argv/*: $ReadOnlyArray<string>*/) {
 
 	const { targetDir } = args
 
-	const server = new Server(targetDir, setup, https && https.cert)
+	const server = new Server(targetDir, setup, https && { ...https.cert })
 	const ports = await server.listen(port, https && https.port)
 
 	server.setFileProvider(async (setup, pathname) => {
 		const filepath = path.join(targetDir, pathname)
 
 		try {
-			const stat = await fs.promises.stat(filepath)
-			const sizes = {
-				identity: stat.size,
-				brotli: null,
-				gzip: null,
-				deflate: null,
-			}
+			const { sizes, hash } = await getFileSizeAndHash(filepath)
 
-			return prepareFile(request, { path: pathname, sizes })
+			return prepareFile(request, { path: pathname, sizes, hash })
 		} catch(e) {
 			// Direct file was not found, try catch-all
 			if(request.catchAllFile != null) {
 				const catchAllFile = request.catchAllFile
 				try {
 					const filepath = path.join(targetDir, catchAllFile.path)
-					const stat = await fs.promises.stat(filepath)
-					const sizes = {
-						identity: stat.size,
-						brotli: null,
-						gzip: null,
-						deflate: null,
-					}
+					const { sizes, hash } = await getFileSizeAndHash(filepath)
 
-					return prepareFile(request, { path: catchAllFile.path, sizes })
+					return prepareFile(request, { path: catchAllFile.path, sizes, hash })
 				} catch(e) {}
 			}
 			return null
@@ -137,6 +169,7 @@ async function createBaseSetup(args/*: CommandOptions*/) /*: Promise<{ request: 
 						gzip: null,
 					},
 					envReplacements: {},
+					hash: "abc",
 				},
 			],
 			catchAllFile: null,
