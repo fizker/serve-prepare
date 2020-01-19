@@ -7,7 +7,7 @@ import type { File, Sizes } from "@fizker/serve"
 import type { SetupRequest } from "./types"
 */
 
-module.exports = (request/*: SetupRequest */, { path, sizes }/*: { path: string, sizes: Sizes }*/) /*: File*/ => {
+module.exports = (request/*: SetupRequest */, { path, sizes, hash }/*: { path: string, sizes: Sizes, hash: string }*/) /*: File*/ => {
 	const overrides = request.files.find(x => x.path === path) || { headers: {}, envReplacements: {} }
 	const mimeType = overrides.mime || "" || mime.getType(path)
 	if(mimeType == null) {
@@ -21,5 +21,6 @@ module.exports = (request/*: SetupRequest */, { path, sizes }/*: { path: string,
 		headers: overrides.headers,
 		mime: mimeType,
 		envReplacements: overrides.envReplacements,
+		hash,
 	}
 }
