@@ -65,6 +65,17 @@ async function getFileSizeAndHash(filepath/*: string*/) /*: Promise<{ sizes: Siz
 module.exports = async function cmd(argv/*: $ReadOnlyArray<string>*/) {
 	const args = parseArgv(argv)
 
+	try {
+		await fs.promises.stat(args.requestPath)
+	} catch(e) {
+		throw new Error(`Could not load JSON file at ${path.resolve(args.requestPath)}`)
+	}
+	try {
+		await fs.promises.stat(args.targetDir)
+	} catch(e) {
+		throw new Error(`Could not find target directory at ${path.resolve(args.targetDir)}`)
+	}
+
 	const [ { request, setup }, https ] = await Promise.all([
 		createBaseSetup(args),
 		prepareHTTPS(),
@@ -121,14 +132,23 @@ module.exports = async function cmd(argv/*: $ReadOnlyArray<string>*/) {
 
 async function prepareHTTPS() /*: Promise<{ port: number, cert: { key: Buffer, cert: Buffer } }|void>*/ {
 	if(httpsPort == null || Number.isNaN(httpsPort) || certPath == null || keyPath == null) {
+		console.log("Setup for HTTPS missing, skipping encrypted server")
 		return
 	}
 
 	let key, cert
 	try {
 		[ key, cert ] = await Promise.all([
-			fs.promises.readFile(keyPath),
-			fs.promises.readFile(certPath),
+			fs.promises.readFile(keyPath)
+				.catch(e => {
+					console.log(`Could not load HTTPS key at ${path.resolve(keyPath)}`)
+					throw e
+				}),
+			fs.promises.readFile(certPath)
+				.catch(e => {
+					console.log(`Could not load HTTPS certificate at ${path.resolve(certPath)}`)
+					throw e
+				}),
 		])
 	} catch(e) {
 		return
