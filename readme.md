@@ -61,7 +61,8 @@ The following are of particular note:
 - There is an expectation that the raw files are created by running `npx webpack`. This should be changed if necessary.
 - There is an expectation that the raw files are placed in a folder called `/static`. This should be changed as necessary.
 - If private NPM repositories are in play, add authentication to an `.npmrc` file and copy that in before running `npm install`.
-- HTTPS/HTTP2 support is done by copying certificates into the container in the last stage. There are some default filenames baked into the image. Please make sure that they correspond to real files, or remove/comment the HTTPS lines; [@fizker/serve][1] will operate in HTTP-only mode if any of the three HTTPS env vars are missing.
+- HTTPS/HTTP2 support is done by copying certificates into the container. This can be done at build-time, but the recommended way is to copy them in using volumes, as this allows the image to be reused in different setups and different URLs. After the files have been copied in, two environment vars, `HTTPS_KEY` and `HTTPS_CERT`, should be set with the internal path to the files. Whether it works or not, [@fizker/serve][1] will log appropriately.
+- The server will use ports 80 and 443 internally. This makes it convenient to know which ports to rebind. If desired, the ports can be overridden by changing the `PORT` env for HTTP and the `HTTPS_PORT` for HTTPS.
 
 
 ### sample serve-setup-request.json
@@ -108,7 +109,7 @@ Running `npx flow serve-prepare create-dockerfile --dev` will create a sample Do
 
 It is much simpler than the regular Dockerfile, but there are more restrictions to running it.
 
-The only thing of interest in the Dockerfile itself is the HTTPS part. It is similar to the regular Dockerfile; if HTTPS is not required, simple remove the lines.
+If HTTPS is required, it functions the exact same way as for the regular Dockerfile; simply copy in the key and certificate, and set up the env vars for where the files are located.
 
 To run it, three steps are required:
 
@@ -131,7 +132,7 @@ The image name have `-dev` appended to avoid name conflicts with the production 
 
 ```
 docker run --detach \
-	--publish 8080:8080 --publish 80443:8081 \
+	--publish 8080:80 --publish 80443:443 \
 	--name web-client \
 	--mount type=bind,source="$(pwd)"/static,destination=/root/target,consistency=cached \
 	<your docker user>/<your project name>-dev
@@ -143,6 +144,19 @@ The `--name` is pure convenience. This allows the name to be referred in future 
 
 The magic lies in the `--mount` part. It creates a link between the folder on the host machine that contains the build output and the container hosting the files. If the build output is not located in `$pwd/static` from where the command is being run, alter the `source=` parameter accordingly.
 
+To include HTTPS, do the following command instead:
+
+```
+docker run --detach \
+	--publish 8080:80 --publish 80443:443 \
+	--name web-client \
+	--mount './local/key.pem:/root/key.pem:ro' --env HTTPS_KEY=/root/key.pem \
+	--mount './local/cert.pem:/root/cert.pem:ro' --env HTTPS_CERT=/root/cert.pem \
+	--mount type=bind,source="$(pwd)"/static,destination=/root/target,consistency=cached \
+	<your docker user>/<your project name>-dev
+```
+
+The only difference is the two lines mounting and then referencing `key.pem` and `cert.pem`. The first path, prefixed with `local/`, refers to the local path; update this as necessary. The second part is not important, it just have to match the value for the env-variable.
 
 ### Third, run the build tool for your project
 

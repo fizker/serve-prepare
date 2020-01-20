@@ -49,14 +49,10 @@ RUN serve-prepare build --request=serve-setup-request.json --target=target --out
 FROM fizker/serve
 WORKDIR /root
 
-### Copy HTTPS certificates
-COPY key.pem cert.pem ./https/
-ENV HTTPS_KEY=https/key.pem HTTPS_CERT=https/cert.pem HTTPS_PORT=443
-
 # Copy the pre-built files in
 COPY --from=builder /root/output ./output
 
-ENV PORT=80
+ENV PORT=80 HTTPS_PORT=443
 ENTRYPOINT [ "serve", "output/setup.json" ]
 
 
