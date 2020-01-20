@@ -4,8 +4,11 @@ Dockerfile*
 .git*
 
 # Project-specific files
-node_modules
 test
+node_modules
+flow-typed
+.flowconfig
+.*
 
 # Typical OS files
 .DS_Store
