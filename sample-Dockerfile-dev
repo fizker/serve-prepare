@@ -1,8 +1,0 @@
-FROM fizker/serve-prepare
-WORKDIR /root
-
-# Copy the setup-request
-COPY serve-setup-request.json ./serve-setup-request.json
-
-ENV PORT=80 HTTPS_PORT=443
-ENTRYPOINT [ "serve-prepare", "serve", "--request=serve-setup-request.json", "--target=target" ]

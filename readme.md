@@ -103,64 +103,54 @@ Instead of rebuilding the image from scratch after every change, it is more conv
 
 To achieve this, a dev Docker image can be used to great effect. Please note that this is not nearly as performant as the production build, so it should only be used for development.
 
-See [the sample development Dockerfile](./sample-Dockerfile-dev) file for a full example.
-
-Running `npx flow serve-prepare create-dockerfile --dev` will create a sample Dockerfile-dev file in the current directory.
-
-It is much simpler than the regular Dockerfile, but there are more restrictions to running it.
+Instead of building a Docker image with the local files, it is easier to simply use the [fizker/serve-prepare][1] docker image directly.
 
 If HTTPS is required, it functions the exact same way as for the regular Dockerfile; simply copy in the key and certificate, and set up the env vars for where the files are located.
 
-To run it, three steps are required:
+To run it, two steps are required:
 
 
-### First step, producing the dev image
+### First, run the build tool for your project
 
-```
-docker build --tag \
-	<your docker user>/<your project name>-dev \
-	--file Dockerfile-dev \
-	.
-```
+If webpack is used, this is most likely `npx webpack --watch`. The build tool will then update the build output whenever files are changed, and the development server will serve any files as they are.
 
-The `--file` refers to the dev version of Dockerfile. Since this is not production, the default name cannot be used.
-
-The image name have `-dev` appended to avoid name conflicts with the production image.
+This step is first, since the server will not start if the folder containing the build output is missing.
 
 
-### Second, running the dev image
+### Second, start the dev server
 
 ```
-docker run --detach \
-	--publish 8080:80 --publish 80443:443 \
-	--name web-client \
+docker run --rm \
+	--publish 8080:80 \
+	-v "$(pwd)"/local/serve-setup-request.json:/root/serve-setup-request.json:ro \
 	--mount type=bind,source="$(pwd)"/static,destination=/root/target,consistency=cached \
-	<your docker user>/<your project name>-dev
+	fizker/serve-prepare
 ```
 
-We bind the ports to whatever we prefer. If HTTPS is not required, the second port is not required either.
+We bind the port to whatever we prefer.
 
-The `--name` is pure convenience. This allows the name to be referred in future `docker` commands instead of copying the container SHA.
+The `--rm` flag means that the container is automatically deleted when the server stops. Since the server contains no data of interest, keeping it around just makes it harder to start with the same command, and leaves unnecessary house-keeping.
+
+This commands starts the server in attached mode and it closes with ctrl-c. If detached-mode is preferred, add `--detach` (or `-d` for short) flag and consider adding a `--name <name>` for easier reference. In detached mode, the server is stopped with `docker stop <name>` or `docker stop <sha>`, if no `--name` was given.
+
+The `-v` simply links to the static `serve-setup-request.json` file that is also used by the production build.
 
 The magic lies in the `--mount` part. It creates a link between the folder on the host machine that contains the build output and the container hosting the files. If the build output is not located in `$pwd/static` from where the command is being run, alter the `source=` parameter accordingly.
 
 To include HTTPS, do the following command instead:
 
 ```
-docker run --detach \
-	--publish 8080:80 --publish 80443:443 \
-	--name web-client \
-	--mount './local/key.pem:/root/key.pem:ro' --env HTTPS_KEY=/root/key.pem \
-	--mount './local/cert.pem:/root/cert.pem:ro' --env HTTPS_CERT=/root/cert.pem \
+docker run --rm \
+	--publish 8080:80 \
+	-v "$(pwd)"/local/serve-setup-request.json:/root/serve-setup-request.json:ro \
 	--mount type=bind,source="$(pwd)"/static,destination=/root/target,consistency=cached \
-	<your docker user>/<your project name>-dev
+	--publish 80443:443 \
+	-v "$(pwd)"/local/key.pem:/root/key.pem:ro --env HTTPS_KEY=/root/key.pem \
+	-v "$(pwd)"/local/cert.pem:/root/cert.pem:ro --env HTTPS_CERT=/root/cert.pem \
+	fizker/serve-prepare
 ```
 
-The only difference is the two lines mounting and then referencing `key.pem` and `cert.pem`. The first path, prefixed with `local/`, refers to the local path; update this as necessary. The second part is not important, it just have to match the value for the env-variable.
-
-### Third, run the build tool for your project
-
-If webpack is used, this is most likely `npx webpack --watch`. The build tool will then update the build output whenever files are changed, and the development server will serve any files as they are.
+The only difference is the additional port bind and the two lines mounting and then referencing `key.pem` and `cert.pem`. The first path, prefixed with `$(pwd)/local/`, refers to the local path; update this as necessary. The second part is not important, it just have to match the value for the env-variable.
 
 
 [1]: https://github.com/fizker/serve
