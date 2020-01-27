@@ -4,7 +4,6 @@ const path = require("path")
 const fs = require("fs")
 
 const getFilePathFromInput = require("../getFilePathFromInput")
-const copyFile = require("../copyFile")
 
 module.exports = async function(argv/*: $ReadOnlyArray<string>*/) /*: Promise<string>*/ {
 	const { dockerfile, ignoreFile, isForced } = parseArgv(argv)
@@ -15,8 +14,8 @@ module.exports = async function(argv/*: $ReadOnlyArray<string>*/) /*: Promise<st
 	])
 
 	await Promise.all([
-		copyFile(path.join(__dirname, "../../sample-Dockerfile"), dockerfileOutputPath),
-		copyFile(path.join(__dirname, "../../sample-dockerignore"), dockerignoreOutputPath),
+		fs.promises.copyFile(path.join(__dirname, "../../sample-Dockerfile"), dockerfileOutputPath),
+		fs.promises.copyFile(path.join(__dirname, "../../sample-dockerignore"), dockerignoreOutputPath),
 	])
 
 	return [
