@@ -40,7 +40,7 @@ async function getFileSizeAndHash(filepath/*: string*/) /*: Promise<{ sizes: Siz
 					callback(new Error("crypto.Hash stream unexpectedly generated multiple chunks"))
 					return
 				}
-				// $FlowFixMe flow 0.114 have invalid typedef for crypto.Hash type
+				// $FlowFixMe flow 0.117 have invalid typedef for crypto.Hash type
 				hash = chunk.toString("hex")
 				callback(null, chunk)
 			},

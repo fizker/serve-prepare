@@ -25,7 +25,7 @@ module.exports = async function({ requestPath, targetDir, outputDir, isCompressi
 	const request = assertSetupRequest(JSON.parse(rawRequest))
 
 	await fs.promises.rmdir(outputDir,
-		// $FlowFixMe flow 0.114.0 does not support the recursive statement
+		// $FlowFixMe flow 0.117.0 does not support the recursive statement
 		{ recursive: true })
 
 	const allFiles = await listFiles(targetDir)

@@ -29,9 +29,7 @@ async function prepareOutputFiles(
 		const rootFolder = folders[x]
 		for(const folder of allFolders) {
 			const pathToCreate = path.join(rootFolder, folder)
-			await fs.promises.mkdir(pathToCreate,
-				// $FlowFixMe flow defs in 0.114.0 are broken
-				{ recursive: true })
+			await fs.promises.mkdir(pathToCreate, { recursive: true })
 		}
 	}))
 
@@ -116,7 +114,7 @@ function getCompressorForType(type/*: "identity"|"brotli"|"gzip"|"deflate"*/) /*
 	case "identity":
 		return new stream.PassThrough()
 	case "brotli":
-		// $FlowFixMe flow 0.114.0 does not have support for the brotli node functions
+		// $FlowFixMe flow 0.117.0 does not have support for the brotli node functions
 		return zlib.createBrotliCompress()
 	case "gzip":
 		return zlib.createGzip()
