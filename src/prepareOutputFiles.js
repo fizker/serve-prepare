@@ -50,6 +50,7 @@ async function prepareFile(
 	isCompressionSkipped/*: boolean*/,
 ) /*: Promise<{ sizes: Sizes, hash: string }>*/ {
 	const inputStream = fs.createReadStream(path.join(inputFolder, filename))
+	inputStream.setMaxListeners(0)
 	const [ hash, identity, gzip, deflate, brotli ] = await Promise.all([
 		getHash(inputStream),
 		compressAndGetSize(folders, "identity", filename, inputStream),
