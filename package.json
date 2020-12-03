@@ -11,13 +11,13 @@
   },
   "dependencies": {
     "@fizker/serve": "^0.3.0",
-    "mime": "^2.4.4"
+    "mime": "^2.4.6"
   },
   "devDependencies": {
     "chai": "^4.2.0",
     "flow-bin": "^0.117.0",
     "flow-typed": "^2.6.2",
-    "mocha": "^6.2.2"
+    "mocha": "^8.2.1"
   },
   "keywords": [
     "http",
