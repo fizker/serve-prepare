@@ -40,7 +40,7 @@ async function getFileSizeAndHash(filepath/*: string*/) /*: Promise<{ sizes: Siz
 					callback(new Error("crypto.Hash stream unexpectedly generated multiple chunks"))
 					return
 				}
-				// $FlowFixMe flow 0.117 have invalid typedef for crypto.Hash type
+				// $FlowFixMe[extra-arg] flow 0.140 have invalid typedef for crypto.Hash type
 				hash = chunk.toString("hex")
 				callback(null, chunk)
 			},
@@ -62,7 +62,7 @@ async function getFileSizeAndHash(filepath/*: string*/) /*: Promise<{ sizes: Siz
 	}
 }
 
-module.exports = async function cmd(argv/*: $ReadOnlyArray<string>*/) {
+module.exports = async function cmd(argv/*: $ReadOnlyArray<string>*/) /*: Promise<string>*/ {
 	const args = parseArgv(argv)
 
 	try {

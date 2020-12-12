@@ -11,7 +11,7 @@ import type { PrepareServerSetupOptions } from "../prepareServerSetup"
 
 module.exports = cmd
 
-async function cmd(argv/*: $ReadOnlyArray<string>*/) {
+async function cmd(argv/*: $ReadOnlyArray<string>*/) /*: Promise<string>*/ {
 	const options = parseArgv(argv)
 	const setup = await prepareServerSetup(options)
 

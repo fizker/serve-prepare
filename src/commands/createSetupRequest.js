@@ -9,7 +9,7 @@ const pipeline = util.promisify(stream.pipeline)
 
 const getOutputPath = require("./_getOutputPath")
 
-module.exports = async function(argv/*: $ReadOnlyArray<string>*/) {
+module.exports = async function(argv/*: $ReadOnlyArray<string>*/) /*: Promise<string>*/ {
 	const outputPath = await getOutputPath(argv, "serve-setup-request.json")
 
 	await pipeline(

@@ -115,7 +115,7 @@ function getCompressorForType(type/*: "identity"|"brotli"|"gzip"|"deflate"*/) /*
 	case "identity":
 		return new stream.PassThrough()
 	case "brotli":
-		// $FlowFixMe flow 0.117.0 does not have support for the brotli node functions
+		// $FlowFixMe[prop-missing] flow 0.140.0 does not have support for the brotli node functions
 		return zlib.createBrotliCompress()
 	case "gzip":
 		return zlib.createGzip()
