@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@fizker/serve": "^0.3.0",
-    "mime": "^2.4.6"
+    "mime": "^2.5.2"
   },
   "devDependencies": {
     "chai": "^4.3.4",
