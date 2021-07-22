@@ -17,7 +17,7 @@ const blacklist = new Set([
 ])
 
 module.exports = async function listFiles(targetDir/*: string*/, root/*: string*/ = "") /*: Promise<$ReadOnlyArray<string>>*/ {
-	// $FlowFixMe[incompatible-call] flow v0.140.0 have incorrect typing for fs
+	// $FlowFixMe[incompatible-type] flow v0.156.0 have incorrect typing for fs ({ withFileTypes: true } changes return type)
 	const list/*: $ReadOnlyArray<Dirent>*/ = await fs.promises.readdir(targetDir, { withFileTypes: true })
 
 	const all = await Promise.all(list.map((entry) => {
