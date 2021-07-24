@@ -1,7 +1,7 @@
 #############################
 
 
-FROM node:erbium-alpine as client
+FROM node:fermium-alpine as client
 WORKDIR /root
 
 # Copying files required for installing dependencies. We do this first, because
